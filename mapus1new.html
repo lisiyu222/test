@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/vega@5.25.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.15.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.22.2"></script>
+
+
+    <style>
+        h1 {
+            text-align: left;
+            /* 将标题文本左对齐 */
+            margin-left: 0;
+            /* 移除左侧边距 */
+            font-size: 2.5rem;
+        }
+
+        #Domain,
+        #dataset {
+            text-align: left;
+            /* 将标题文本左对齐 */
+            margin-left: 0;
+            /* 移除左侧边距 */
+            font-size: 3rem;
+        }
+
+        .content {
+            font-size: 1.5rem;
+            /* 设置段落文本的字体大小 */
+        }
+    </style>
+
+</head>
+
+<style>
+    body {
+        text-align: center;
+        /* 将文本内容左右居中 */
+    }
+
+    h1 {
+        margin-bottom: 20px;
+        /* 设置标题之间的间距 */
+    }
+
+    #vis,
+    #vis2 {
+        text-align: center;
+        /* 将文本内容左右居中 */
+        margin-bottom: 20px;
+        /* 设置图表之间的间距 */
+    }
+
+    .flex-container {
+        display: flex;
+    }
+
+    #vis4,
+    #vis7 {
+        flex: 1;
+        padding: 10px;
+        width: 50%;
+    }
+</style>
+
+<body>
+
+    <h1 name="dataset">Dataset<p class="content">
+            The dataset provided at <a href="https://www.kaggle.com/code/tobniislam/american-university-eda/input">The
+                Dataset</a>
+                
+            ,which contains information about the number of colleges and universities in the United States by state.
+
+
+        </p>
+    </h1>
+
+
+
+    <h1>Scatter diagram-Public&Private University of US
+    </h1>
+    <div class="flex-container">
+        <div id="vis3"></div>
+        <div id="vis8"></div>
+    </div>
+
+
+    <h1>Scatter diagram-University Location of US
+    </h1>
+    <div class="flex-container">
+        <div id="vis4"></div>
+        <div id="vis7"></div>
+    </div>
+
+
+    <h1>Number of university in each state 
+    </h1>
+    <div id="vis5"></div>
+
+    <h1>Number of university in each state
+    </h1>
+    <div id="vis6"></div>
+    <script>
+
+
+
+        const spec3 = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "title": "Public & Private University Location of USA",
+            "width": 500,
+            "height": 300,
+            "layer": [
+                {
+                    "data": {
+                        "url": "https://raw.githubusercontent.com/lisiyu222/assign2_1013/main/us-10m.json",
+                        "format": { "type": "topojson", "feature": "states" }
+                    },
+                    "transform": [{ "calculate": "datum.State", "as": "state" }],
+                    "projection": { "type": "albersUsa" },
+                    "mark": { "type": "geoshape", "stroke": "#121111", "fill": "#97ccad" },
+                    "encoding": {
+                        "color": { "field": "", "type": "nominal", "legend": null },
+                        "opacity": { "value": 0.3 }
+                    }
+                },
+                {
+                    "data": {
+                        "url": "https://raw.githubusercontent.com/lisiyu222/assign2_1013/main/IPEDS_data_with_num.csv"
+                    },
+                    "projection": { "type": "albersUsa" },
+                    "mark": "circle",
+                    "encoding": {
+                        "longitude": {
+                            "field": "Longitude location of institution",
+                            "type": "quantitative"
+                        },
+                        "latitude": {
+                            "field": "Latitude location of institution",
+                            "type": "quantitative"
+                        },
+                        "size": { "value": 15 },
+                        "color": {
+                            "field": "Control of institution",
+                            "type": "nominal",
+                            "scale": {
+                                "domain": ["Public", "Private not-for-profit"],
+                                "range": ["steelblue", "red"]
+                            }
+                        },
+                        "tooltip": [
+                            { "field": "Name", "title": "Institution" },
+                            { "field": "Latitude location of institution", "title": "Latitude" },
+                            { "field": "Longitude location of institution", "title": "Longitude" },
+                            { "field": "State", "title": "State" },
+                            { "field": "Control of institution", "title": "Control" }
+                        ]
+                    }
+                }
+            ],
+            "config": {}
+        }
+        vegaEmbed("#vis3", spec3, { mode: "vega-lite" }).then(console.log).catch(console.warn);
+
+
+
+        const spec4 = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "title": "University Location of USA",
+            "width": 500,
+            "height": 300,
+            "layer": [
+                {
+                    "data": {
+                        "url": "https://raw.githubusercontent.com/lisiyu222/assign2_1013/main/us-10m.json",
+                        "format": { "type": "topojson", "feature": "states" }
+                    },
+                    "transform": [{ "calculate": "datum.State", "as": "state" }],
+                    "projection": { "type": "albersUsa" },
+                    "mark": { "type": "geoshape" },
+                    "encoding": {
+                        "color": { "field": "id", "type": "nominal", "legend": null },
+                        "opacity": { "value": 0.3 }
+                    }
+                },
+                {
+                    "data": {
+                        "url": "https://raw.githubusercontent.com/lisiyu222/assign2_1013/main/IPEDS_data_with_num.csv"
+                    },
+                    "projection": { "type": "albersUsa" },
+                    "mark": "circle",
+                    "encoding": {
+                        "longitude": {
+                            "field": "Longitude location of institution",
+                            "type": "quantitative"
+                        },
+                        "latitude": {
+                            "field": "Latitude location of institution",
+                            "type": "quantitative"
+                        },
+                        "size": { "value": 10 },
+                        "color": { "value": "steelblue" },
+                        "tooltip": [
+                            { "field": "Name", "title": "Institution" },
+                            { "field": "Latitude location of institution", "title": "Latitude" },
+                            { "field": "Longitude location of institution", "title": "Longitude" },
+                            { "field": "State", "title": "State" }
+                        ]
+                    }
+                }
+            ],
+            "config": {}
+        }
+
+        vegaEmbed("#vis4", spec4, { mode: "vega-lite" }).then(console.log).catch(console.warn);
+
+
+        const spec5 = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "title": {
+                "text": "The University Numbers per State of USA",
+                "anchor": "middle",
+                "fontSize": 12,
+                "offset": 10
+            },
+            "repeat": { "row": ["Count"] },
+            "resolve": { "scale": { "color": "independent" } },
+            "spec": {
+                "width": 500,
+                "height": 300,
+                "data": {
+                    "url": "https://raw.githubusercontent.com/lisiyu222/assign2_1013/main/IPEDS_data_with_num.csv"
+                },
+                "transform": [
+                    {
+                        "lookup": "id",
+                        "from": {
+                            "data": {
+                                "url": "https://vega.github.io/editor/data/us-10m.json",
+                                "format": { "type": "topojson", "feature": "states" }
+                            },
+                            "key": "id"
+                        },
+                        "as": "geo"
+                    }
+                ],
+                "projection": { "type": "albersUsa" },
+                "mark": "geoshape",
+                "encoding": {
+                    "shape": { "field": "geo", "type": "geojson" },
+                    "color": { "field": { "repeat": "row" }, "type": "quantitative" }
+                }
+            },
+            "config": {}
+        }
+        vegaEmbed("#vis5", spec5, { mode: "vega-lite" }).then(console.log).catch(console.warn);
+
+
+
+        const spec6 = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "title": "University Location of USA",
+            "width": 500,
+            "height": 300,
+            "layer": [
+                {
+                    "data": {
+                        "url": "https://raw.githubusercontent.com/lisiyu222/assign2_1013/main/us-10m.json",
+                        "format": { "type": "topojson", "feature": "states" }
+                    },
+                    "transform": [{ "calculate": "datum.State", "as": "state" }],
+                    "projection": { "type": "albersUsa" },
+                    "mark": {
+                        "type": "geoshape",
+                        "fill": "#e4f3ea",
+                        "stroke": "#121111",
+                        "strokeWidth": 0.3
+                    },
+                    "encoding": {
+                        "color": { "field": "states", "type": "ordinal", "legend": null }
+                    }
+                },
+                {
+                    "data": {
+                        "url": "https://raw.githubusercontent.com/lisiyu222/assign2_1013/main/mean_values_by_state.csv"
+                    },
+                    "projection": { "type": "albersUsa" },
+                    "mark": "circle",
+                    "encoding": {
+                        "longitude": {
+                            "field": "Longitude location of institution_x",
+                            "type": "quantitative"
+                        },
+                        "latitude": {
+                            "field": "Latitude location of institution_x",
+                            "type": "quantitative"
+                        },
+                        "size": {
+                            "field": "Count_x",
+                            "type": "quantitative",
+                            "legend": { "title": "Univ count" }
+                        },
+                        "color": { "value": "red" },
+                        "tooltip": [
+                            { "field": "Latitude location of institution_x", "title": "Latitude" },
+                            {
+                                "field": "Longitude location of institution_x",
+                                "title": "Longitude"
+                            },
+                            { "field": "State", "title": "State" },
+                            { "field": "Count_x", "title": "Univ count" }
+                        ]
+                    }
+                }
+            ],
+            "config": {}
+        }
+
+        vegaEmbed("#vis6", spec6, { mode: "vega-lite" }).then(console.log).catch(console.warn);
+
+
+        const spec7 = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Bar chart with text labels. Set domain to make the frame cover the labels.",
+  "data": {"url": "https://raw.githubusercontent.com/lisiyu222/assign2_1013/main/TOP10STATE.csv"},
+  "encoding": {
+    "y": {"field": "State", "type": "nominal","sort":"-x","title":"Top10 State"},
+    "x": {"field": "__count", "type": "quantitative", "scale": {"domain": [0, 130]},"title":"Number of university"}
+  },
+  "layer": [{
+    "mark": "bar"
+  }, {
+    "mark": {
+      "type": "text",
+      "align": "left",
+      "baseline": "middle",
+      "dx": 3
+    },
+    "encoding": {
+      "text": {"field": "__count", "type": "quantitative"},
+      
+    }
+  }]
+        }
+
+        vegaEmbed("#vis7", spec7, { mode: "vega-lite" }).then(console.log).catch(console.warn);
+
+
+        const spec8 = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {"url": "https://raw.githubusercontent.com/lisiyu222/assign2_1013/main/IPEDS_data_with_num.csv"},
+  "mark": "bar",
+  "encoding": {
+    "x": {
+      "field": "State",
+      "type": "ordinal",
+      "title": "State"
+    },
+    "y": {
+      "aggregate": "count",
+      "type": "quantitative"
+    },
+    "color": {
+      "field": "Control of institution",
+      "type": "nominal",
+      "scale": {
+        "domain": ["Public", "Private not-for-profit"],
+        "range": [ "#aec7e8", "#1f77b4"]
+      },
+      "title": "No. of university"
+    },
+        "tooltip": [
+          {"field": "Control of institution", "title": "Control"},
+          {"aggregate": "count",
+          "title": "No"},
+          {"field": "State",
+          "title": "State"},
+
+        ]
+
+
+    
+
+  },
+
+    "layer": [{
+    "mark": "bar"
+  }, {
+    "mark": {
+      "type": "text",
+
+      "align": "left",
+      "baseline": "middle",
+      "dx": 5
+      
+    },
+    "encoding": {
+      "text": {"aggregate": "count", "type": "quantitative"},
+      "order": {
+      "field": "Control of institution",
+      "type": "nominal",
+      "scale": {
+        "domain": ["Private not-for-profit", "Public"],
+        "range": [ "#aec7e8", "#1f77b4"]
+      }
+       }
+      
+    }
+  }]
+        }
+
+
+        vegaEmbed("#vis8", spec8, { mode: "vega-lite" }).then(console.log).catch(console.warn);
+    </script>
+</body>
+
+</html>
